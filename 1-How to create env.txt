@@ -1,0 +1,31 @@
+- open Conda console in C:\Users\aleja\Desktop\test_thesis\train-transformer-from-SimulAI
+
+- conda create -n master_thesis_transformers_baseline_simulai python=3.9
+
+- conda activate master_thesis_transformers_baseline_simulai 
+
+- pip install jupyterlab
+
+- pip install torchview
+
+- conda install python-graphviz
+
+- pip install simulai-toolkit 
+
+- pip install -r examples/requirements.txt
+
+- pip install -r requirements.txt
+
+- conda install mpi4py
+
+- conda install pytorch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=12.1 -c pytorch -c nvidia
+
+- conda install cudatoolkit=10.0 cudnn=7.3.1  
+
+- pip install numpy==1.26.3 
+
+- pip uninstall torchvision 
+
+
+
+                                                                                                                                                                                                                                      
