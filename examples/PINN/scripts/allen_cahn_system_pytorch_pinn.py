@@ -177,7 +177,9 @@ class TestAllencahnPINN:
         )
 
         saver = SPFile(compact=False)
-        saver.write(save_dir="/tmp", name="allen_cahn_net", model=net, template=model)
+        # saver.write(save_dir="/tmp", name="allen_cahn_net", model=net, template=model)
+        # modified by @alesservin
+        saver.write(save_dir="tmp_trained_models", name="allen_cahn_net", model=net, template=model)
 
         # Evaluation and post-processing
         X_DIM_F = 5 * X_DIM
