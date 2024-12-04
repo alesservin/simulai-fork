@@ -97,3 +97,4 @@ run_examples.txt
 mkdocs/site/**/*
 mkdocs/docs/blog.md
 /examples/PINN/scripts/allen_cahn_net
+*.pkl
