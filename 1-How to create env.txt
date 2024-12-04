@@ -26,6 +26,8 @@
 
 - pip uninstall torchvision 
 
+- pip install pandas
+
 ******************* Experimental part: use source code from github instead of installation with pip *********************
 - pip uninstall simulai-toolkit
 - pip install -U git+https://github.com/IBM/simulai#egg=simulai-toolkit
