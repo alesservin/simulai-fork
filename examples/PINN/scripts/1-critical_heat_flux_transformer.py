@@ -3,6 +3,7 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from simulai.models import Transformer
+import joblib
 
 def pad_features(features, target_dim):
     if features.shape[1] < target_dim:
@@ -29,16 +30,20 @@ scaler_y = StandardScaler()
 X_scaled = scaler_X.fit_transform(X)
 y_scaled = scaler_y.fit_transform(y)
 
-# Split into train and test sets
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_scaled, test_size=0.2, random_state=42)
+# Split into train+dev and test sets
+X_train, X_temp, y_train, y_temp = train_test_split(X_scaled, y_scaled, test_size=0.3, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.33, random_state=42)
 
 # Padding to ensure compatibility with num_heads
 X_train = pad_features(X_train, 8)
+X_val = pad_features(X_val, 8)
 X_test = pad_features(X_test, 8)
 
 # Convert to PyTorch tensors and move to the device
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32).to(device)
 y_train_tensor = torch.tensor(y_train, dtype=torch.float32).to(device)
+X_val_tensor = torch.tensor(X_val, dtype=torch.float32).to(device)
+y_val_tensor = torch.tensor(y_val, dtype=torch.float32).to(device)
 X_test_tensor = torch.tensor(X_test, dtype=torch.float32).to(device)
 y_test_tensor = torch.tensor(y_test, dtype=torch.float32).to(device)
 
@@ -120,12 +125,13 @@ for epoch in range(n_epochs):
 
         epoch_loss += loss.item()
 
-    # Logging every 100 epochs
+    # Evaluate on dev set every 100 epochs
     if epoch % 100 == 0:
         with torch.no_grad():
-            test_predictions = model.forward(X_test_tensor)
-            test_loss = loss_function(test_predictions, y_test_tensor).item()
-        print(f"Epoch {epoch}/{n_epochs}, Train Loss: {epoch_loss/num_batches:.6f}, Test Loss: {test_loss:.6f}")
+            dev_predictions = model.forward(X_val_tensor)
+            dev_loss = loss_function(dev_predictions, y_val_tensor).item()
+        print(f"Epoch {epoch}/{n_epochs}, Train Loss: {epoch_loss/num_batches:.6f}, Dev Loss: {dev_loss:.6f}")
+
 
 # Evaluate on test data (explicitly passing input data)
 with torch.no_grad():
@@ -137,6 +143,5 @@ with torch.no_grad():
 torch.save(model.state_dict(), "critical_heat_flux_transformer.pth")
 
 # Save scalers
-import joblib
 joblib.dump(scaler_X, 'critical_heat_flux_transformer-scaler_X.pkl')
 joblib.dump(scaler_y, 'critical_heat_flux_transformer-scaler_y.pkl')
